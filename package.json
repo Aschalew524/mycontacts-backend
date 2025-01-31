@@ -1,0 +1,15 @@
+{
+  "name": "mycontacts-backend-api",
+  "version": "1.0.0",
+  "description": "this is express project for my mycontacts backend api",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "Express"
+  },
+  "author": "Aschalew",
+  "license": "MIT"
+}
