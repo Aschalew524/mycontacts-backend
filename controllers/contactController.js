@@ -1,41 +1,50 @@
- // description : Get all contacts
+const asyncHandler = require("express-async-handler");  
+
+// description : Get all contacts
  // route : GET /api/contacts
     // access : Public
-
 const { get } = require("../Routes/contactRoutes");
 
-    const getContact = (req,res) => {
-        res.send("get all contacts");
-    };
+    const getContact =  asyncHandler(async (req,res) => {
+    res.status(201).json({message: "get all contacts"});
+    });
 
 // description : Create a new contact
 // route : POST /api/contacts   
 // access : Public
-const createContact = (req,res) => {
-    res.send("Create a new contact");
-};
+const createContact = asyncHandler(async (req,res) => {
+    const {name,email,phonenum} = req.body;
+    if (!name || !email || !phonenum) {
+        console.log("please enter all fields");
+        res.status(400)
+        throw new Error("please enter all fields"); 
+    }
+    else{
+    console.log(req.body);
+    res.json({message: "Create a new contact"});}
+});
 
 // description : Get a contact with id
 // route : GET /api/contacts/:id
 // access : Public
-const getContactById = (req,res) => {
-    res.send("get contact with id: " + req.params.id);
-};
+const getContactById = asyncHandler(async (req,res) => {
+    res.json({message :"get contact with id: " + req.params.id});
+});
 
 // description : Update a contact with id
 // route : PUT /api/contacts/:id
 // access : Public  
-const updateContact = (req,res) => {
-    res.send("update contact with id: " + req.params.id);
-};
+const updateContact = asyncHandler( async (req,res) => {
+    res.json({message:"update contact with id: " + req.params.id});
+});
 
 // description : Delete a contact with id
 // route : DELETE /api/contacts/:id
 
 // access : Public
-const deleteContact = (req,res) => {
-    res.send("delete contact with id " + req.params.id);
-};
+const deleteContact =asyncHandler( async (req,res) => {
+    res.json({message: "delete contact with id " + req.params.id});
+});
 
 module.exports = {getContact,
     createContact,
