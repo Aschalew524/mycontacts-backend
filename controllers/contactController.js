@@ -1,19 +1,20 @@
 const asyncHandler = require("express-async-handler"); 
 const Contact = require("../models/contactModel");
 
+
 // description : Get all contacts
  // route : GET /api/contacts
-    // access : Public
+    // access : Public       then cahnge it to private and only authenticated user can access it
 const { get } = require("../Routes/contactRoutes");
 
     const getContact =  asyncHandler(async (req,res) => {
-        const contacts = await Contact.find({});
+        const contacts = await Contact.find({user_id: req.user.id});
     res.status(200).json(contacts);
     });
 
 // description : Create a new contact
 // route : POST /api/contacts   
-// access : Public
+// access : Public    then cahnge it to private and only authenticated user can access it
 const createContact = asyncHandler(async (req,res) => {
     const {name,email,phonenum} = req.body;
     if (!name || !email || !phonenum) {
@@ -25,7 +26,8 @@ const createContact = asyncHandler(async (req,res) => {
         const contact = await Contact.create({
         name,
         email,
-        phonenum
+        phonenum,
+        user_id: req.user.id
         });
    
     res.json(contact);}
@@ -33,7 +35,7 @@ const createContact = asyncHandler(async (req,res) => {
 
 // description : Get a contact with id
 // route : GET /api/contacts/:id
-// access : Public
+// access : Public    then cahnge it to private and only authenticated user can access it
 const getContactById = asyncHandler(async (req,res) => {
     const contact = await Contact.findById(req.params.id);
     if (!contact) {
@@ -54,6 +56,11 @@ const updateContact = asyncHandler( async (req,res) => {
     res.status(404);
     throw new Error("Contact not found");}
 
+    if (contact.user_id.toString() !== req.user.id) {
+        res.status(403);
+        throw new Error("user Not authorized");
+    }
+
 const updatedContact = await Contact.findByIdAndUpdate(req.params.id,req.body,
     {new:true,
     runValidators:true}
@@ -70,6 +77,10 @@ const deleteContact = asyncHandler(async (req, res) => {
     if (!delcontact) {
         res.status(404);
         throw new Error("Contact not found");
+    }
+    if (delcontact.user_id.toString() !== req.user.id) {
+        res.status(403);
+        throw new Error("user Not authorized");
     }
     await Contact.deleteOne({ _id: req.params.id }); 
     res.status(200).json({ message: "Contact removed" });
